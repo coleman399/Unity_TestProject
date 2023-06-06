@@ -71,10 +71,8 @@ public class PlayerController : MonoBehaviour
             if (hit.transform.TryGetComponent(out ClearCounter clearCounter))
             {
                 // Has ClearCounter
-                Debug.Log("Hit counter: " + clearCounter);
                 if (clearCounter != this.selectedCounter)
                 {
-                    Debug.Log("Setting selected counter to: " + clearCounter);
                     SetSelectedCounter(clearCounter);
                 }
             }
@@ -152,16 +150,6 @@ public class PlayerController : MonoBehaviour
     {    
         this.selectedCounter = selectedCounter;
 
-        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs { selectedCounter = selectedCounter });
-
-        if (this.selectedCounter != null)
-        {
-            Debug.Log("Selected Counter is " + this.selectedCounter);
-        }
-        else
-        {
-            Debug.Log("Selected Counter is null");
-        }
-        
+        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs { selectedCounter = selectedCounter });        
     }   
 }
