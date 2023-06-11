@@ -41,9 +41,11 @@ public class PlayerController : MonoBehaviour
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
     {
+        
         if (selectedCounter != null)
         {
-            selectedCounter.Interact();
+            this.selectedCounter.clearCounter = selectedCounter;
+            this.selectedCounter.Interact();
         }
     }
 
@@ -147,9 +149,10 @@ public class PlayerController : MonoBehaviour
     }
 
     private void SetSelectedCounter(ClearCounter selectedCounter)
-    {    
-        this.selectedCounter = selectedCounter;
+    {
 
+        this.selectedCounter = selectedCounter;
+        
         OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs { selectedCounter = selectedCounter });        
     }   
 }
