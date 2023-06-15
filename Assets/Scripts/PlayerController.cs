@@ -1,16 +1,13 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IKitchenObjectParent
 {
 
     public static PlayerController Instance { get; private set; }
 
-
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
+
     public class OnSelectedCounterChangedEventArgs : EventArgs
     {
         public ClearCounter selectedCounter;
@@ -19,10 +16,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float movementSpeed = 10f;
     [SerializeField] private LayerMask counterLayerMask;
     [SerializeField] private GameInput gameInput;
+    [SerializeField] private Transform kitchenObjectHoldPoint;
 
     private bool isWalking;
     private Vector3 lastInteractionDir;
     private ClearCounter selectedCounter;
+    private KitchenObject kitchenObject;
 
     private void Awake()
     {
@@ -41,11 +40,10 @@ public class PlayerController : MonoBehaviour
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
     {
-        
+
         if (selectedCounter != null)
         {
-            this.selectedCounter.clearCounter = selectedCounter;
-            this.selectedCounter.Interact();
+            this.selectedCounter.Interact(this);
         }
     }
 
@@ -65,7 +63,7 @@ public class PlayerController : MonoBehaviour
         {
             lastInteractionDir = movDir;
         }
-        
+
 
         float interactDistance = 2f;
         if (Physics.Raycast(transform.position, lastInteractionDir, out RaycastHit hit, interactDistance, counterLayerMask))
@@ -150,9 +148,45 @@ public class PlayerController : MonoBehaviour
 
     private void SetSelectedCounter(ClearCounter selectedCounter)
     {
-
         this.selectedCounter = selectedCounter;
-        
-        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs { selectedCounter = selectedCounter });        
-    }   
+
+        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs { selectedCounter = selectedCounter });
+    }
+
+
+    public void CreateKitchenObject(PlayerController player)
+    {
+        if (player.kitchenObject != null)
+        {
+            Debug.Log("Player is already holding an object: " + player.kitchenObject);
+            //Destroy(player.kitchenObject.gameObject);
+            //player.kitchenObject = null;
+        }
+        else
+        {
+            player.kitchenObject = Instantiate(selectedCounter.GetCounterKitchenObjectSO().prefab, kitchenObjectHoldPoint).GetComponent<KitchenObject>();
+            player.kitchenObject.Host = player;
+            Debug.Log(player.kitchenObject.Host.ToString() + " is hosting kitchenObject " + player.kitchenObject);
+        }
+    }
+
+    public KitchenObject GetKitchenObject()
+    {
+        return kitchenObject;
+    }
+
+    public void SetKitchenObject(KitchenObject kitchenObject)
+    {
+        this.kitchenObject = kitchenObject;
+    }
+
+    public Transform GetKitchenObjectHoldPoint()
+    {
+        return kitchenObjectHoldPoint;
+    }
+
+    public void SetKitchenObjectHoldPoint(Transform kitchenObjectHoldPoint)
+    {
+        this.kitchenObjectHoldPoint = kitchenObjectHoldPoint;
+    }
 }
