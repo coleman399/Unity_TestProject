@@ -3,14 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClearCounter : _BaseCounter, IKitchenObjectParent, IInteractableObject
+public class ClearCounter : _BaseCounter, IInteractableObject
 {
     [SerializeField] private KitchenObjectSO kitchenObjectSO;
     [SerializeField] private ClearCounter secondCounter;
-    [SerializeField] private Transform kitchenCounterObjectSpawnPoint;
     [SerializeField] private bool testing;
-
-    private KitchenObject kitchenObject;
 
     private void Update()
     {
@@ -25,18 +22,22 @@ public class ClearCounter : _BaseCounter, IKitchenObjectParent, IInteractableObj
                     CreateKitchenObject(secondCounter.GetKitchenCounterObjectSpawnPoint(), kitchenObjectSO.prefab);
                 }
                 else
-                {
-                    Destroy(secondCounter.kitchenObject.gameObject);
-                    secondCounter.kitchenObject = null;
-                    Debug.Log("secondCounter.kitchenObject has been destroyed");
+                {                    
+                    secondCounter.DestroyKitchenObject();
                     CreateKitchenObject(secondCounter.GetKitchenCounterObjectSpawnPoint(), kitchenObjectSO.prefab);
                 }
+            }
+            else
+            {
+                Debug.Log("secondCounter is null");
             }
         }
     }
     public void Interact(PlayerController thePlayerInteractingWithTheObject)
     {
         Debug.Log("Interact!");
+
+        KitchenObject kitchenObject = GetKitchenObject();
 
         if (kitchenObject == null)
         {
@@ -71,27 +72,6 @@ public class ClearCounter : _BaseCounter, IKitchenObjectParent, IInteractableObj
         }
     }
 
-    private KitchenObject GetKitchenObject()
-    {
-       return kitchenObject;
-    }
-
-    private void SetKitchenObject(KitchenObject kitchenObject)
-    {
-        this.kitchenObject = kitchenObject;
-    }
-
-    private Transform GetKitchenCounterObjectSpawnPoint()
-    {
-        return kitchenCounterObjectSpawnPoint;
-    }
-
-    private void SetKitchenCounterObjectSpawnPoint(Transform kitchenCounterObjectSpawnPoint)
-    {
-        this.kitchenCounterObjectSpawnPoint = kitchenCounterObjectSpawnPoint;
-    }
-
-
     public KitchenObjectSO GetCounterKitchenObjectSO()
     {
         return kitchenObjectSO;
@@ -100,27 +80,5 @@ public class ClearCounter : _BaseCounter, IKitchenObjectParent, IInteractableObj
     public void SetCounterKitchenObjectSO(KitchenObjectSO kitchenObjectSO)
     {
         this.kitchenObjectSO = kitchenObjectSO;
-    }
-
-    public void CreateKitchenObject(Transform host, Transform prefab)
-    {
-        SetKitchenObject(Instantiate(prefab, GetKitchenCounterObjectSpawnPoint()).GetComponent<KitchenObject>());
-        kitchenObject.Host = this;
-        Debug.Log(kitchenObject.Host.ToString() + " is hosting kitchenObject " + kitchenObject);
-    }
-
-    public void DestroyKitchenObject()
-    {
-        KitchenObject kitchenItemToBeDestroyed = kitchenObject;
-        Destroy(kitchenObject.gameObject);
-        SetKitchenObject(null);
-        if (!kitchenObject)
-        {
-            Debug.Log(kitchenItemToBeDestroyed + " has been destroyed");
-        }
-        else
-        {
-            Debug.Log(kitchenObject + " has not been destroyed");
-        }
     }
 }

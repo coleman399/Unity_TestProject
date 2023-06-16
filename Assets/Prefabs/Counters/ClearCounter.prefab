@@ -51,7 +51,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kitchenObjectSO: {fileID: 11400000, guid: 35e8a9e54ce580c4a97b8910f69e5966, type: 2}
   secondCounter: {fileID: 0}
-  kitchenCounterObjectSpawnPoint: {fileID: 3397543294163296435}
   testing: 0
 --- !u!65 &6867564307776676129
 BoxCollider:
@@ -138,8 +137,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa44185b98be69346b6b214de4194c57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clearCounter: {fileID: 278791180519322934}
-  selectedCounterVisual: {fileID: 4918079507629362352}
+  counter: {fileID: 278791180519322934}
+  selectedCounterVisualArray:
+  - {fileID: 4918079507629362352}
 --- !u!1 &3282491595258884056
 GameObject:
   m_ObjectHideFlags: 0
@@ -362,7 +362,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8064634626536759971}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.3, z: 0}
+  m_LocalPosition: {x: 0, y: 1.22, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
