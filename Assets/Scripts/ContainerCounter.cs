@@ -1,12 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClearCounter : _BaseCounter, IKitchenObjectParent, IInteractableObject
+public class ContainerCounter : _BaseCounter, IKitchenObjectParent
 {
     [SerializeField] private KitchenObjectSO kitchenObjectSO;
-    [SerializeField] private ClearCounter secondCounter;
+    [SerializeField] private ContainerCounter secondCounter;
     [SerializeField] private Transform kitchenCounterObjectSpawnPoint;
     [SerializeField] private bool testing;
 
@@ -20,17 +19,6 @@ public class ClearCounter : _BaseCounter, IKitchenObjectParent, IInteractableObj
             if (secondCounter != null)
             {
 
-                if (secondCounter.GetKitchenObject() == null)
-                {
-                    CreateKitchenObject(secondCounter.GetKitchenCounterObjectSpawnPoint(), kitchenObjectSO.prefab);
-                }
-                else
-                {
-                    Destroy(secondCounter.kitchenObject.gameObject);
-                    secondCounter.kitchenObject = null;
-                    Debug.Log("secondCounter.kitchenObject has been destroyed");
-                    CreateKitchenObject(secondCounter.GetKitchenCounterObjectSpawnPoint(), kitchenObjectSO.prefab);
-                }
             }
         }
     }
@@ -73,7 +61,7 @@ public class ClearCounter : _BaseCounter, IKitchenObjectParent, IInteractableObj
 
     private KitchenObject GetKitchenObject()
     {
-       return kitchenObject;
+        return kitchenObject;
     }
 
     private void SetKitchenObject(KitchenObject kitchenObject)

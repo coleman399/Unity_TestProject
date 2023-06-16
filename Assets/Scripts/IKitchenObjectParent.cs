@@ -2,8 +2,7 @@ using UnityEngine;
 
 public interface IKitchenObjectParent
 {
-    public void CreateKitchenObject(GameObject hostObject)
-    {
-    }
+    public void CreateKitchenObject(Transform host, Transform prefab);
+    public void DestroyKitchenObject();
 }
  

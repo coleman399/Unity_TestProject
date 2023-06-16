@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
 
     public class OnSelectedCounterChangedEventArgs : EventArgs
     {
-        public ClearCounter selectedCounter;
+        public _BaseCounter selectedCounter;
     }
 
     [SerializeField] private float movementSpeed = 10f;
@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
 
     private bool isWalking;
     private Vector3 lastInteractionDir;
-    private ClearCounter selectedCounter;
+    private _BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
 
     private void Awake()
@@ -40,10 +40,14 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
     {
-
-        if (selectedCounter != null)
+        switch (selectedCounter)
         {
-            this.selectedCounter.Interact(this);
+            case ClearCounter clearCounter:
+                clearCounter.Interact(this);
+                break;
+            case ContainerCounter containerCounter:
+                containerCounter.Interact(this);
+                break;
         }
     }
 
@@ -68,12 +72,12 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
         float interactDistance = 2f;
         if (Physics.Raycast(transform.position, lastInteractionDir, out RaycastHit hit, interactDistance, counterLayerMask))
         {
-            if (hit.transform.TryGetComponent(out ClearCounter clearCounter))
+            if (hit.transform.TryGetComponent(out _BaseCounter counter))
             {
                 // Has ClearCounter
-                if (clearCounter != this.selectedCounter)
+                if (counter != this.selectedCounter)
                 {
-                    SetSelectedCounter(clearCounter);
+                    SetSelectedCounter(counter);
                 }
             }
             else
@@ -88,7 +92,6 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
             SetSelectedCounter(null);
         }
     }
-
 
     private void HandleMovement()
     {
@@ -146,28 +149,11 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
         return isWalking;
     }
 
-    private void SetSelectedCounter(ClearCounter selectedCounter)
+    private void SetSelectedCounter(_BaseCounter selectedCounter)
     {
         this.selectedCounter = selectedCounter;
 
         OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs { selectedCounter = selectedCounter });
-    }
-
-
-    public void CreateKitchenObject(PlayerController player)
-    {
-        if (player.kitchenObject != null)
-        {
-            Debug.Log("Player is already holding an object: " + player.kitchenObject);
-            //Destroy(player.kitchenObject.gameObject);
-            //player.kitchenObject = null;
-        }
-        else
-        {
-            player.kitchenObject = Instantiate(selectedCounter.GetCounterKitchenObjectSO().prefab, kitchenObjectHoldPoint).GetComponent<KitchenObject>();
-            player.kitchenObject.Host = player;
-            Debug.Log(player.kitchenObject.Host.ToString() + " is hosting kitchenObject " + player.kitchenObject);
-        }
     }
 
     public KitchenObject GetKitchenObject()
@@ -188,5 +174,32 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObjectHoldPoint(Transform kitchenObjectHoldPoint)
     {
         this.kitchenObjectHoldPoint = kitchenObjectHoldPoint;
+    }
+
+    public void CreateKitchenObject(Transform hostObject)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DestroyKitchenObject()
+    {
+        KitchenObject kitchenItemToBeDestroyed = kitchenObject;
+        Destroy(kitchenObject.gameObject);
+        SetKitchenObject(null);
+        if (!kitchenObject)
+        {
+            Debug.Log(kitchenItemToBeDestroyed + " has been destroyed");
+        }
+        else
+        {
+            Debug.Log(kitchenObject + " has not been destroyed");
+        }
+    }
+
+    public void CreateKitchenObject(Transform host, Transform prefab)
+    {
+        SetKitchenObject(Instantiate(prefab, kitchenObjectHoldPoint).GetComponent<KitchenObject>());
+        kitchenObject.Host = this;
+        Debug.Log(kitchenObject.Host.ToString() + " is hosting kitchenObject " + kitchenObject);
     }
 }
