@@ -36,6 +36,17 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
     private void Start()
     {
         gameInput.OnInteractAction += GameInput_OnInteractAction;
+        gameInput.OnInteractAlternateAction += GameInput_OnInteractAlternateAction;
+    }
+
+    private void GameInput_OnInteractAlternateAction(object sender, EventArgs e)
+    {
+        switch (selectedCounter)
+        {
+            case CuttingCounter cuttingCounter:
+                cuttingCounter.InteractAlternate(this);
+                break;
+        }
     }
 
     private void GameInput_OnInteractAction(object sender, EventArgs e)
@@ -47,6 +58,9 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
                 break;
             case ContainerCounter containerCounter:
                 containerCounter.Interact(this);
+                break;
+            case CuttingCounter cuttingCounter:
+                cuttingCounter.Interact(this);
                 break;
         }
     }
