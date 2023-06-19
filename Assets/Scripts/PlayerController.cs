@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
     [SerializeField] private GameInput gameInput;
     [SerializeField] private Transform kitchenObjectHoldPoint;
 
-    private bool isWalking;
+    private readonly bool isWalking;
     private Vector3 lastInteractionDir;
     private _BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
@@ -188,11 +188,6 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObjectHoldPoint(Transform kitchenObjectHoldPoint)
     {
         this.kitchenObjectHoldPoint = kitchenObjectHoldPoint;
-    }
-
-    public void CreateKitchenObject(Transform hostObject)
-    {
-        throw new NotImplementedException();
     }
 
     public void DestroyKitchenObject()

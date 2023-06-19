@@ -6,23 +6,9 @@ using UnityEngine;
 public class ContainerCounter : _BaseCounter, IInteractableObject
 {
     [SerializeField] private KitchenObjectSO kitchenObjectSO;
-    [SerializeField] private ContainerCounter secondCounter;
-    [SerializeField] private bool testing;
-
 
     public event EventHandler playerWithdrewKitchenObject;
 
-    private void Update()
-    {
-        if (testing && Input.GetKeyDown(KeyCode.T))
-        {
-            Debug.Log("testing...");
-            if (secondCounter != null)
-            {
-
-            }
-        }
-    }
     public void Interact(PlayerController thePlayerInteractingWithTheObject)
     {
         Debug.Log("Interact!");

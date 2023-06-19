@@ -1,24 +1,24 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CuttingCounter : _BaseCounter, IInteractableObject
 {
     [SerializeField] private KitchenObjectSO[] kitchenObjectSO;
 
+    private readonly ProgressBarUI progressBar;
 
-    private void Update()
+    public event EventHandler<OnChopEventArgs> ChopEvent;
+
+    public class OnChopEventArgs : EventArgs
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Debug.Log("F Key Pressed");
-        }
+        public KitchenObject kitchenObject;
+        public CuttingCounter counter;
     }
+
 
     public void Interact(PlayerController thePlayerInteractingWithTheObject)
     {
-         
+
         Debug.Log("Interact!");
 
         KitchenObject kitchenObject = GetKitchenObject();
@@ -62,34 +62,43 @@ public class CuttingCounter : _BaseCounter, IInteractableObject
 
         KitchenObject kitchenObject = GetKitchenObject();
 
-        Transform kitchenObjectSpawnPoint = GetKitchenCounterObjectSpawnPoint();
-
-        string kitchenObjectName = kitchenObject.KitchenObjectSO.prefab.name;
-
-        if (!kitchenObject) 
+        if (!kitchenObject)
         {
-            Debug.Log("Nothing to Chop.");   
+            Debug.Log("Nothing to Chop.");
         }
         else
         {
-            switch(kitchenObjectName)
+            switch (kitchenObject.KitchenObjectSO.prefab.name)
             {
                 case KitchenObjectType.CABBAGE:
                     Debug.Log(thePlayerInteractingWithTheObject.name + " Chopped Cabbage");
-                    DestroyKitchenObject();
-                    CreateKitchenObject(kitchenObjectSpawnPoint, kitchenObjectSO[0].prefab);
+                    Chop(kitchenObject, thePlayerInteractingWithTheObject, 0);
                     break;
                 case KitchenObjectType.TOMATO:
                     Debug.Log(thePlayerInteractingWithTheObject.name + " Chopped Tomato");
-                    DestroyKitchenObject();
-                    CreateKitchenObject(kitchenObjectSpawnPoint, kitchenObjectSO[1].prefab);
+                    Chop(kitchenObject, thePlayerInteractingWithTheObject, 1);
                     break;
                 case KitchenObjectType.CHEESE_BLOCK:
                     Debug.Log(thePlayerInteractingWithTheObject.name + " Chopped Cheese Block");
-                    DestroyKitchenObject();
-                    CreateKitchenObject(kitchenObjectSpawnPoint, kitchenObjectSO[2].prefab);
+                    Chop(kitchenObject, thePlayerInteractingWithTheObject, 2);
                     break;
             }
         }
-    }    
+    }
+
+    public void Chop(KitchenObject kitchenObject, PlayerController thePlayerInteractingWithTheObject, int kitchenObjectType)
+    {
+        int chopProgress = kitchenObject.GetChopProgress();
+        int maxChopProgress = kitchenObject.GetMaxChopProgress();
+        kitchenObject.SetChopProgress(chopProgress += 1);
+
+        if (chopProgress >= maxChopProgress)
+        {
+            DestroyKitchenObject();
+            CreateKitchenObject(GetKitchenCounterObjectSpawnPoint(), kitchenObjectSO[kitchenObjectType].prefab);
+        }
+
+        ChopEvent?.Invoke(this, new OnChopEventArgs { kitchenObject = kitchenObject });
+
+    }
 }

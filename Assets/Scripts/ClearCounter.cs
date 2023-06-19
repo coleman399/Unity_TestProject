@@ -6,33 +6,7 @@ using UnityEngine;
 public class ClearCounter : _BaseCounter, IInteractableObject
 {
     [SerializeField] private KitchenObjectSO kitchenObjectSO;
-    [SerializeField] private ClearCounter secondCounter;
-    [SerializeField] private bool testing;
 
-    private void Update()
-    {
-        if (testing && Input.GetKeyDown(KeyCode.T))
-        {
-            Debug.Log("testing...");
-            if (secondCounter != null)
-            {
-
-                if (secondCounter.GetKitchenObject() == null)
-                {
-                    CreateKitchenObject(secondCounter.GetKitchenCounterObjectSpawnPoint(), kitchenObjectSO.prefab);
-                }
-                else
-                {                    
-                    secondCounter.DestroyKitchenObject();
-                    CreateKitchenObject(secondCounter.GetKitchenCounterObjectSpawnPoint(), kitchenObjectSO.prefab);
-                }
-            }
-            else
-            {
-                Debug.Log("secondCounter is null");
-            }
-        }
-    }
     public void Interact(PlayerController thePlayerInteractingWithTheObject)
     {
         Debug.Log("Interact!");

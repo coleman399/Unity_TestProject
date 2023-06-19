@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kitchenObjectSO: {fileID: 11400000, guid: 35e8a9e54ce580c4a97b8910f69e5966, type: 2}
+  MaxChopProgress: 3
 --- !u!1001 &4134266767463597383
 PrefabInstance:
   m_ObjectHideFlags: 0
